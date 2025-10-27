@@ -14,6 +14,7 @@ from reportlab.lib.pagesizes import A4
 # Initialize FastAPI app
 app = FastAPI(title="Invoice Generator API", version="1.0.0")
 
+
 # Add request logging middleware
 @app.middleware("http")
 async def log_requests(request, call_next):
@@ -21,6 +22,7 @@ async def log_requests(request, call_next):
     response = await call_next(request)
     print(f"📤 Response: {response.status_code}")
     return response
+
 
 # Add CORS middleware
 app.add_middleware(
@@ -30,6 +32,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Get the base directory (project root)
 import os
@@ -54,7 +57,6 @@ app.include_router(pdf_router)
 
 
 # API Routes
-
 @app.get("/")
 async def root():
     """Serve the frontend index.html"""
@@ -63,8 +65,8 @@ async def root():
     return FileResponse(index_path)
 
 
-# Upload endpoints removed - now using temporary files sent with PDF generation request
 
+# Upload endpoints removed - now using temporary files sent with PDF generation request
 @app.get("/api/health")
 async def health_check():
     """Health check endpoint"""

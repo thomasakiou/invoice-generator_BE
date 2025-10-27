@@ -8,12 +8,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+
     <div class="container">
         <header class="main-header">
             <h1><i class="fas fa-file-invoice"></i> Invoice Generator</h1>
             <p>Create professional invoices quickly and easily</p>
+            <!-- Theme Toggle Button -->
+            <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle dark/light mode">
+                <i class="fas fa-moon"></i>
+            </button>
         </header>
-
+            <!-- AdSense: Top Banner -->
+        <div class="adsense-container" style="margin: 20px 0; text-align: center; position:relative;">
+            <div style="width:100%;max-width:728px;height:90px;margin:0 auto;background:#eee;border:2px dashed #aaa;display:flex;align-items:center;justify-content:center;font-size:16px;color:#888;">Test Banner<br>Top</div>
+            <!--
+            <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-PLACEHOLDER"
+                    data-ad-slot="1111111111"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            -->
+        </div>
         <main class="invoice-form">
             <div id="invoiceForm">
                 <!-- Company Information Section -->
@@ -106,6 +125,22 @@
                     </div>
                 </section>
 
+                                    <!-- AdSense: Top Banner -->
+                <div class="adsense-container" style="margin: 20px 0; text-align: center; position:relative;">
+                    <div style="width:100%;max-width:728px;height:90px;margin:0 auto;background:#eee;border:2px dashed #aaa;display:flex;align-items:center;justify-content:center;font-size:16px;color:#888;">Test Banner<br>Top</div>
+                    <!--
+                    <ins class="adsbygoogle"
+                            style="display:block"
+                            data-ad-client="ca-pub-PLACEHOLDER"
+                            data-ad-slot="1111111111"
+                            data-ad-format="auto"
+                            data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                    -->
+                </div>
+
                 <!-- Client Information Section -->
                 <section class="form-section">
                     <h2><i class="fas fa-user"></i> Bill To</h2>
@@ -135,7 +170,7 @@
                         <div id="itemsList">
                             <!-- Items will be added dynamically -->
                         </div>
-                        <button type="button" id="addItemBtn" class="btn-secondary">
+                        <button type="button" id="addItemBtn" class="btn-primary">
                             <i class="fas fa-plus"></i> Add Item
                         </button>
                     </div>
@@ -182,6 +217,22 @@
                         <textarea id="comments" name="comments" rows="4" placeholder="Enter additional comments or notes...">Thank you for your patronage</textarea>
                     </div>
                 </section>
+
+                    <!-- AdSense: Top Banner -->
+            <div class="adsense-container" style="margin: 20px 0; text-align: center; position:relative;">
+                <div style="width:100%;max-width:728px;height:90px;margin:0 auto;background:#eee;border:2px dashed #aaa;display:flex;align-items:center;justify-content:center;font-size:16px;color:#888;">Test Banner<br>Top</div>
+                <!--
+                <ins class="adsbygoogle"
+                        style="display:block"
+                        data-ad-client="ca-pub-PLACEHOLDER"
+                        data-ad-slot="1111111111"
+                        data-ad-format="auto"
+                        data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                -->
+            </div>
 
                 <!-- Signature Section -->
                 <section class="form-section">
@@ -235,6 +286,34 @@
 
     <!-- Success/Error Messages -->
     <div id="messageContainer" class="message-container"></div>
+
+    <!-- AdSense: Left Banner -->
+<div class="adsense-side adsense-left" style="position:fixed;left:0;top:0;height:100vh;width:160px;z-index:1000;display:flex;align-items:center;justify-content:center;background:rgba(245,245,245,0.8);">
+    <div style="width:120px;height:600px;background:#eee;border:2px dashed #aaa;display:flex;align-items:center;justify-content:center;font-size:16px;color:#888;">Test Banner<br>Left</div>
+    <!--
+    <ins class="adsbygoogle"
+             style="display:inline-block;width:120px;height:600px"
+             data-ad-client="ca-pub-PLACEHOLDER"
+             data-ad-slot="4444444444"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    -->
+</div>
+
+<!-- AdSense: Right Banner -->
+<div class="adsense-side adsense-right" style="position:fixed;right:0;top:0;height:100vh;width:160px;z-index:1000;display:flex;align-items:center;justify-content:center;background:rgba(245,245,245,0.8);">
+    <div style="width:120px;height:600px;background:#eee;border:2px dashed #aaa;display:flex;align-items:center;justify-content:center;font-size:16px;color:#888;">Test Banner<br>Right</div>
+    <!--
+    <ins class="adsbygoogle"
+             style="display:inline-block;width:120px;height:600px"
+             data-ad-client="ca-pub-PLACEHOLDER"
+             data-ad-slot="5555555555"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    -->
+</div>
 
     <script src="js/invoice.js"></script>
 </body>

@@ -157,6 +157,25 @@ class InvoiceGenerator {
             this.updateCurrencyDisplay();
             this.calculateTotals();
         });
+        
+        // Theme toggle logic
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function() {
+                document.body.classList.toggle('dark-theme');
+                if (document.body.classList.contains('dark-theme')) {
+                    themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+            // Ensure only icon is shown on load
+            themeToggleBtn.innerHTML = document.body.classList.contains('dark-theme')
+                ? '<i class="fas fa-sun"></i>'
+                : '<i class="fas fa-moon"></i>';
+        } else {
+            console.error('❌ Theme toggle button not found!');
+        }
     }
     
     setupFileUploads() {
@@ -308,9 +327,7 @@ class InvoiceGenerator {
             <input type="number" placeholder="Qty" min="0" step="0.01" class="item-quantity" data-index="${itemIndex}">
             <input type="number" placeholder="Price" min="0" step="0.01" class="item-price" data-index="${itemIndex}">
             <div class="item-total">$0.00</div>
-            <button type="button" class="btn-danger remove-item" data-index="${itemIndex}">
-                <i class="fas fa-trash"></i>
-            </button>
+            ${itemIndex === 0 ? '' : `<button type="button" class="remove-item-btn remove-item" data-index="${itemIndex}"><i class="fas fa-trash"></i></button>`}
         `;
         
         itemsContainer.appendChild(itemRow);
@@ -349,9 +366,14 @@ class InvoiceGenerator {
         });
         
         // Remove button
-        itemRow.querySelector('.remove-item').addEventListener('click', () => {
-            this.removeItem(index);
-        });
+        const removeBtn = itemRow.querySelector('.remove-item');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                this.items.splice(index, 1);
+                this.rebuildItemsList();
+                this.calculateTotals();
+            });
+        }
     }
     
     updateItemTotal(index) {
@@ -374,18 +396,15 @@ class InvoiceGenerator {
     rebuildItemsList() {
         const itemsContainer = document.getElementById('itemsList');
         itemsContainer.innerHTML = '';
-        
         this.items.forEach((item, index) => {
             const itemRow = document.createElement('div');
             itemRow.className = 'item-row';
             itemRow.innerHTML = `
                 <input type="text" placeholder="Enter item description (e.g., Web Design Service)" class="item-description" data-index="${index}" value="${item.description}">
-                <input type="number" placeholder="Qty" min="0" step="0.01" class="item-quantity" data-index="${index}" value="${item.quantity}">
-                <input type="number" placeholder="Price" min="0" step="0.01" class="item-price" data-index="${index}" value="${item.unit_price}">
-                <div class="item-total">${this.currencySymbols[this.currentCurrency]} ${this.formatNumber(item.quantity * item.unit_price)}</div>
-                <button type="button" class="btn-danger remove-item" data-index="${index}">
-                    <i class="fas fa-trash"></i>
-                </button>
+                <input type="number" placeholder="Qty" min="0" step="0.01" class="item-quantity" data-index="${index}" value="${item.quantity ? item.quantity : ''}">
+                <input type="number" placeholder="Price" min="0" step="0.01" class="item-price" data-index="${index}" value="${item.unit_price ? item.unit_price : ''}">
+                <div class="item-total">${this.currencySymbols[this.currentCurrency]}${this.formatNumber(item.quantity * item.unit_price)}</div>
+                ${index === 0 ? '' : `<button type="button" class="remove-item-btn remove-item" data-index="${index}"><i class="fas fa-trash"></i></button>`}
             `;
             
             itemsContainer.appendChild(itemRow);

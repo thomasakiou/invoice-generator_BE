@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+venv/
+.env
+*.sqlite3
+
+# FastAPI/ReportLab
+*.pdf
+
+# Node/JS
+node_modules/
+*.log
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Static uploads
+backend/static/logos/
+backend/static/signatures/
+
+# Misc
+*.bak
+*.tmp
+*.swp
+
+# Frontend build
+frontend/dist/
+frontend/build/

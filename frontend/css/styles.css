@@ -286,6 +286,7 @@ body {
     border: 1px solid var(--input-border);
     border-radius: 4px;
     font-size: 14px;
+    /* max-width: 30px; */
 }
 
 .item-total {

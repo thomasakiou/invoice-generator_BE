@@ -250,6 +250,19 @@ class InvoiceGenerator {
     }
 
     handleLogoUpload(file) {
+        // Check file size (150KB limit)
+        const maxSize = 150 * 1024; // 150KB in bytes
+        if (file.size > maxSize) {
+            this.showMessage(`Logo file size must be less than 150KB. Current size: ${(file.size / 1024).toFixed(1)}KB`, 'error');
+            return;
+        }
+        
+        // Check file type
+        if (!file.type.startsWith('image/')) {
+            this.showMessage('Please select a valid image file for logo', 'error');
+            return;
+        }
+        
         this.logoFile = file;
         const preview = document.getElementById('logoPreview');
         const reader = new FileReader();
@@ -268,6 +281,19 @@ class InvoiceGenerator {
     }
 
     handleSignatureUpload(file) {
+        // Check file size (150KB limit)
+        const maxSize = 150 * 1024; // 150KB in bytes
+        if (file.size > maxSize) {
+            this.showMessage(`Signature file size must be less than 150KB. Current size: ${(file.size / 1024).toFixed(1)}KB`, 'error');
+            return;
+        }
+        
+        // Check file type
+        if (!file.type.startsWith('image/')) {
+            this.showMessage('Please select a valid image file for signature', 'error');
+            return;
+        }
+        
         this.signatureFile = file;
         const preview = document.getElementById('signaturePreview');
         const reader = new FileReader();

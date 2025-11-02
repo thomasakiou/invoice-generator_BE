@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Limits - Invoice & Receipt Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .limit-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .limit-card h2 {
+            color: #495057;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+        }
+        .limit-card h2 i {
+            margin-right: 10px;
+            color: #007bff;
+        }
+        .specs {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .specs strong {
+            color: #1976d2;
+        }
+        .supported-formats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .format-tag {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-upload"></i> File Upload Limits & Requirements</h1>
+        
+        <div class="limit-card">
+            <h2><i class="fas fa-image"></i> Company Logo</h2>
+            <div class="specs">
+                <strong>Maximum File Size:</strong> 150 KB (153,600 bytes)<br>
+                <strong>Recommended Size:</strong> 50-100 KB for optimal performance<br>
+                <strong>Display Size:</strong> Automatically resized to fit PDF layout
+            </div>
+            <p><strong>Supported Formats:</strong></p>
+            <div class="supported-formats">
+                <span class="format-tag">PNG</span>
+                <span class="format-tag">JPG</span>
+                <span class="format-tag">JPEG</span>
+                <span class="format-tag">GIF</span>
+                <span class="format-tag">BMP</span>
+                <span class="format-tag">WEBP</span>
+            </div>
+        </div>
+
+        <div class="limit-card">
+            <h2><i class="fas fa-signature"></i> Digital Signature</h2>
+            <div class="specs">
+                <strong>Maximum File Size:</strong> 150 KB (153,600 bytes)<br>
+                <strong>Recommended Size:</strong> 30-80 KB for best quality<br>
+                <strong>Display Size:</strong> Automatically resized to fit signature area
+            </div>
+            <p><strong>Supported Formats:</strong></p>
+            <div class="supported-formats">
+                <span class="format-tag">PNG</span>
+                <span class="format-tag">JPG</span>
+                <span class="format-tag">JPEG</span>
+                <span class="format-tag">GIF</span>
+                <span class="format-tag">BMP</span>
+                <span class="format-tag">WEBP</span>
+            </div>
+        </div>
+
+        <div class="warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Important Notes:</strong>
+            <ul>
+                <li>Files larger than 150 KB will be rejected automatically</li>
+                <li>Only image files are accepted - documents, PDFs, and other file types are not supported</li>
+                <li>For best results, use PNG format with transparent backgrounds for logos</li>
+                <li>Signature images work best with white or transparent backgrounds</li>
+                <li>Large files may take longer to upload and process</li>
+            </ul>
+        </div>
+
+        <div class="limit-card">
+            <h2><i class="fas fa-tips"></i> Optimization Tips</h2>
+            <ul>
+                <li><strong>Logo Images:</strong> Use square or rectangular logos with good contrast</li>
+                <li><strong>Signature Images:</strong> Scan signatures at 300 DPI for crisp quality</li>
+                <li><strong>File Size:</strong> Compress images before upload to reduce file size</li>
+                <li><strong>Format Choice:</strong> Use PNG for logos with transparency, JPG for photos</li>
+                <li><strong>Dimensions:</strong> Logos work best at 200x200 to 500x500 pixels</li>
+            </ul>
+        </div>
+
+        <div class="back-link">
+            <a href="./"><i class="fas fa-arrow-left"></i> Back to Generator</a>
+        </div>
+    </div>
+</body>
+</html>

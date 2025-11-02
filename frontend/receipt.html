@@ -11,7 +11,7 @@
 <body>
     <div class="container">
         <header class="main-header">
-            <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+            <a href="/document-generator" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
             <h1><i class="fas fa-receipt"></i> Receipt Generator</h1>
             <p>Create professional payment receipts quickly and easily</p>
             <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle dark/light mode">
@@ -53,12 +53,12 @@
                     
                     <!-- Logo Upload -->
                     <div class="form-group">
-                        <label for="logoUpload">Company Logo</label>
+                        <label for="logoUpload">Company Logo <small><a href="file-limits.html" target="_blank" style="color: #007bff;"><i class="fas fa-info-circle"></i> File limits & formats</a></small></label>
                         <div class="file-upload-area">
                             <input type="file" id="logoUpload" accept="image/*">
                             <div class="upload-text">
                                 <i class="fas fa-cloud-upload-alt"></i>
-                                <span>Click to upload logo or drag & drop</span>
+                                <span>Click to upload logo or drag & drop (Max: 150KB)</span>
                             </div>
                         </div>
                         <div id="logoPreview" class="image-preview"></div>
@@ -220,12 +220,12 @@
                     
                     <!-- Signature Upload -->
                     <div class="form-group">
-                        <label for="signatureUpload">Signature Image</label>
+                        <label for="signatureUpload">Signature Image <small><a href="file-limits.html" target="_blank" style="color: #007bff;"><i class="fas fa-info-circle"></i> File limits & formats</a></small></label>
                         <div class="file-upload-area">
                             <input type="file" id="signatureUpload" accept="image/*">
                             <div class="upload-text">
                                 <i class="fas fa-pen-nib"></i>
-                                <span>Click to upload signature or drag & drop</span>
+                                <span>Click to upload signature or drag & drop (Max: 5MB)</span>
                             </div>
                         </div>
                         <div id="signaturePreview" class="image-preview"></div>

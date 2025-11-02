@@ -14,19 +14,15 @@ def format_number(number):
     """Format number with comma separators (e.g., 1,000.00)"""
     return f"{number:,.2f}"
 
-
-################################## CURRENCY SYMBOL HANDLING ##############################
 def get_pdf_safe_currency_symbol(currency_symbol):
     """Convert Unicode currency symbols to PDF-safe alternatives"""
     symbol_map = {
-        '$': '$', '£': '£', '¥': '¥', '€': '€',
+        '$': '$', '£': 'GBP', '¥': 'JPY', '€': 'EUR',
         '₦': 'NGN', '₹': 'INR', '₩': 'KRW', '₽': 'RUB', '₣': 'CHF',
         'kr': 'kr', 'R$': 'BRL', 'R': 'ZAR',
     }
     return symbol_map.get(currency_symbol, currency_symbol)
 
-
-##################################### RECEIPT PDF GENERATOR ##################################
 def generate_receipt_pdf_with_temp_files(buffer, receipt_data, logo_path=None, signature_path=None):
     """Generate PDF receipt with selected template"""
     template = receipt_data.template or "classic"
@@ -41,9 +37,6 @@ def generate_receipt_pdf_with_temp_files(buffer, receipt_data, logo_path=None, s
     else:
         return generate_classic_receipt(buffer, receipt_data, logo_path, signature_path)
 
-
-
-########################################### CLASSIC TEMPLATE ##################################
 def generate_classic_receipt(buffer, receipt_data, logo_path=None, signature_path=None):
     """Classic receipt template matching URL design"""
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=0.5*inch, leftMargin=0.5*inch, rightMargin=0.5*inch, bottomMargin=0.5*inch)
@@ -175,15 +168,15 @@ def generate_classic_receipt(buffer, receipt_data, logo_path=None, signature_pat
         totals_data = []
         
         if receipt_data.discount_amount and receipt_data.discount_amount > 0:
-            totals_data.append(['Subtotal:', f"{currency_symbol} {format_number(receipt_data.subtotal)}"])
-            totals_data.append([f'Discount ({receipt_data.discount_rate}%):', f"- {currency_symbol} {format_number(receipt_data.discount_amount)}"])
+            totals_data.append(['Subtotal:', f"{currency_symbol}{format_number(receipt_data.subtotal)}"])
+            totals_data.append([f'Discount ({receipt_data.discount_rate}%):', f"-{currency_symbol}{format_number(receipt_data.discount_amount)}"])
         
         if receipt_data.tax_amount and receipt_data.tax_amount > 0:
             if not totals_data:
-                totals_data.append(['Subtotal:', f"{currency_symbol} {format_number(receipt_data.subtotal)}"])
-            totals_data.append([f'Tax ({receipt_data.tax_rate}%):', f"{currency_symbol} {format_number(receipt_data.tax_amount)}"])
+                totals_data.append(['Subtotal:', f"{currency_symbol}{format_number(receipt_data.subtotal)}"])
+            totals_data.append([f'Tax ({receipt_data.tax_rate}%):', f"{currency_symbol}{format_number(receipt_data.tax_amount)}"])
         
-        totals_data.append(['TOTAL:', f"{currency_symbol} {format_number(receipt_data.total)}"])
+        totals_data.append(['TOTAL:', f"{currency_symbol}{format_number(receipt_data.total)}"])
         
         totals_table = Table(totals_data, colWidths=[4.8*inch, 2.2*inch])
         totals_table.setStyle(TableStyle([
@@ -219,6 +212,10 @@ def generate_classic_receipt(buffer, receipt_data, logo_path=None, signature_pat
         ]))
         story.append(empty_totals)
         story.append(Spacer(1, 25))
+    
+    # Thank you message
+    # thank_style = ParagraphStyle('ThankYou', parent=styles['Normal'], fontSize=12, fontName='Helvetica-Bold', alignment=1, textColor=header_blue, spaceAfter=20)
+    # story.append(Paragraph("Thank you for your business!", thank_style))
     
     # Comments
     if receipt_data.comments:
@@ -257,9 +254,6 @@ def generate_classic_receipt(buffer, receipt_data, logo_path=None, signature_pat
     doc.build(story)
     return buffer
 
-
-
-################################ MODERN TEMPLATE ##################################
 def generate_modern_receipt(buffer, receipt_data, logo_path=None, signature_path=None):
     """Modern receipt template matching URL design"""
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=0.5*inch, leftMargin=0.5*inch, rightMargin=0.5*inch, bottomMargin=0.5*inch)
@@ -336,7 +330,8 @@ def generate_modern_receipt(buffer, receipt_data, logo_path=None, signature_path
         story.append(Paragraph(customer_info, customer_style))
     
     # Items table with S/No column
-    items_data = [['S/NO', 'DESCRIPTION', 'QTY', 'UNIT PRICE', 'TOTAL']]
+    currency_display = get_pdf_safe_currency_symbol(receipt_data.currency_symbol)
+    items_data = [['S/NO', 'DESCRIPTION', 'QTY', f'UNIT PRICE ({currency_display})', f'TOTAL ({currency_display})']]
     
     currency_symbol = get_pdf_safe_currency_symbol(receipt_data.currency_symbol)
     
@@ -350,8 +345,8 @@ def generate_modern_receipt(buffer, receipt_data, logo_path=None, signature_path
                 str(i),
                 item.description,
                 qty_display,
-                f"{currency_symbol} {format_number(item.unit_price)}",
-                f"{currency_symbol} {format_number(item.quantity * item.unit_price)}"
+                f"{currency_symbol}{format_number(item.unit_price)}",
+                f"{currency_symbol}{format_number(item.quantity * item.unit_price)}"
             ])
     else:
         # Add 5 empty rows for modern template
@@ -393,15 +388,15 @@ def generate_modern_receipt(buffer, receipt_data, logo_path=None, signature_path
         totals_data = []
         
         if receipt_data.discount_amount and receipt_data.discount_amount > 0:
-            totals_data.append(['Subtotal:', f"{currency_symbol} {format_number(receipt_data.subtotal)}"])
-            totals_data.append([f'Discount ({receipt_data.discount_rate}%):', f"- {currency_symbol} {format_number(receipt_data.discount_amount)}"])
+            totals_data.append(['Subtotal:', f"{currency_symbol}{format_number(receipt_data.subtotal)}"])
+            totals_data.append([f'Discount ({receipt_data.discount_rate}%):', f"-{currency_symbol}{format_number(receipt_data.discount_amount)}"])
         
         if receipt_data.tax_amount and receipt_data.tax_amount > 0:
             if not totals_data:
-                totals_data.append(['Subtotal:', f"{currency_symbol} {format_number(receipt_data.subtotal)}"])
-            totals_data.append([f'Tax ({receipt_data.tax_rate}%):', f"{currency_symbol} {format_number(receipt_data.tax_amount)}"])
+                totals_data.append(['Subtotal:', f"{currency_symbol}{format_number(receipt_data.subtotal)}"])
+            totals_data.append([f'Tax ({receipt_data.tax_rate}%):', f"{currency_symbol}{format_number(receipt_data.tax_amount)}"])
         
-        totals_data.append(['TOTAL:', f"{currency_symbol} {format_number(receipt_data.total)}"])
+        totals_data.append(['TOTAL:', f"{currency_symbol}{format_number(receipt_data.total)}"])
         
         totals_table = Table(totals_data, colWidths=[4.8*inch, 2.2*inch])
         totals_table.setStyle(TableStyle([
@@ -432,6 +427,10 @@ def generate_modern_receipt(buffer, receipt_data, logo_path=None, signature_path
         story.append(empty_total)
     
     story.append(Spacer(1, 30))
+    
+    # Thank you message
+    # thank_style = ParagraphStyle('ModernThank', parent=styles['Normal'], fontSize=14, fontName='Helvetica-Bold', alignment=1, textColor=accent_blue, spaceAfter=20)
+    # story.append(Paragraph("Thank you for your business!", thank_style))
     
     # Comments
     if receipt_data.comments:
@@ -471,9 +470,6 @@ def generate_modern_receipt(buffer, receipt_data, logo_path=None, signature_path
     doc.build(story)
     return buffer
 
-
-
-############################ MINIMAL TEMPLATE #################################
 def generate_minimal_receipt(buffer, receipt_data, logo_path=None, signature_path=None):
     """Minimal receipt template based on URL design"""
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=0.8*inch, leftMargin=0.8*inch, rightMargin=0.8*inch, bottomMargin=0.8*inch)
@@ -551,7 +547,8 @@ def generate_minimal_receipt(buffer, receipt_data, logo_path=None, signature_pat
     story.append(Spacer(1, 30))
     
     # Items table - clean and minimal with S/No
-    items_data = [['S/No', 'Description', 'Qty', 'Rate', 'Amount']]
+    currency_display = get_pdf_safe_currency_symbol(receipt_data.currency_symbol)
+    items_data = [['S/No', 'Description', 'Qty', f'Rate ({currency_display})', f'Amount ({currency_display})']]
     
     currency_symbol = get_pdf_safe_currency_symbol(receipt_data.currency_symbol)
     
@@ -565,8 +562,8 @@ def generate_minimal_receipt(buffer, receipt_data, logo_path=None, signature_pat
                 str(i),
                 item.description,
                 qty_display,
-                f"{currency_symbol} {format_number(item.unit_price)}",
-                f"{currency_symbol} {format_number(item.quantity * item.unit_price)}"
+                f"{currency_symbol}{format_number(item.unit_price)}",
+                f"{currency_symbol}{format_number(item.quantity * item.unit_price)}"
             ])
     else:
         # Add 3 empty rows for minimal template
@@ -662,11 +659,6 @@ def generate_minimal_receipt(buffer, receipt_data, logo_path=None, signature_pat
     doc.build(story)
     return buffer
 
-
-
-
-
-########################### THERMAL TEMPLATE ##################################
 def generate_thermal_receipt(buffer, receipt_data, logo_path=None, signature_path=None):
     """Thermal printer style receipt"""
     from reportlab.lib.pagesizes import letter
@@ -722,7 +714,7 @@ def generate_thermal_receipt(buffer, receipt_data, logo_path=None, signature_pat
         for item in valid_items:
             qty_display = str(int(item.quantity)) if item.quantity.is_integer() else str(item.quantity)
             story.append(Paragraph(item.description, thermal_style))
-            story.append(Paragraph(f"{qty_display} x {format_number(item.unit_price)} = {currency_symbol} {format_number(item.quantity * item.unit_price)}", thermal_style))
+            story.append(Paragraph(f"{qty_display} x {format_number(item.unit_price)} = {format_number(item.quantity * item.unit_price)}", thermal_style))
     else:
         story.append(Paragraph("No items", thermal_style))
     
@@ -737,16 +729,11 @@ def generate_thermal_receipt(buffer, receipt_data, logo_path=None, signature_pat
     story.append(Paragraph("THANK YOU!", thermal_bold))
     story.append(Paragraph("", thermal_style))
     story.append(Paragraph("SELLER: ___________", thermal_style))
-    story.append(Spacer(1, 10))
     story.append(Paragraph("CUSTOMER: _________", thermal_style))
     
     doc.build(story)
     return buffer
 
-
-
-
-########################### ELEGANT TEMPLATE ##################################
 def generate_elegant_receipt(buffer, receipt_data, logo_path=None, signature_path=None):
     """Elegant receipt template"""
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=0.8*inch, leftMargin=0.8*inch, rightMargin=0.8*inch, bottomMargin=0.8*inch)
@@ -789,7 +776,8 @@ def generate_elegant_receipt(buffer, receipt_data, logo_path=None, signature_pat
     
     # Elegant items
     if receipt_data.items:
-        items_data = [['Description', 'Qty', 'Rate', 'Amount']]
+        currency_display = get_pdf_safe_currency_symbol(receipt_data.currency_symbol)
+        items_data = [['Description', 'Qty', f'Rate ({currency_display})', f'Amount ({currency_display})']]
         currency_symbol = get_pdf_safe_currency_symbol(receipt_data.currency_symbol)
         for item in receipt_data.items:
             qty_display = str(int(item.quantity)) if item.quantity.is_integer() else str(item.quantity)

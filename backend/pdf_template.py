@@ -16,6 +16,9 @@ def format_number(number):
     """Format number with comma separators (e.g., 1,000.00)"""
     return f"{number:,.2f}"
 
+
+
+################################## LOGO IMAGE HANDLING ##############################
 def find_logo_image():
     """Find company logo in static directory"""
     logo_dir = "static/logos"
@@ -32,6 +35,8 @@ def find_logo_image():
     
     return None
 
+
+################################### SIGNATURE IMAGE HANDLING ##############################
 def find_signature_image(signature_filename):
     """Find signature image in static directory"""
     if not signature_filename:
@@ -50,6 +55,9 @@ def find_signature_image(signature_filename):
     
     return None
 
+
+
+############################# TEMP FILE CLEANUP ##################################
 def cleanup_temp_files(logo_path=None, signature_path=None):
     """Clean up temporary image files"""
     files_to_delete = [f for f in [logo_path, signature_path] if f and os.path.exists(f)]
@@ -61,6 +69,10 @@ def cleanup_temp_files(logo_path=None, signature_path=None):
         except Exception as e:
             print(f"Failed to clean up {file_path}: {e}")
 
+
+
+
+########################### PDF GENERATOR WITH TEMPLATES ##################################
 def generate_invoice_pdf_with_temp_files(buffer, invoice_data: InvoiceData, logo_path=None, signature_path=None):
     """Generate PDF invoice with temporary image files using selected template"""
     
@@ -78,6 +90,10 @@ def generate_invoice_pdf_with_temp_files(buffer, invoice_data: InvoiceData, logo
     else:  # default to classic
         return generate_classic_template(buffer, invoice_data, logo_path, signature_path)
 
+
+
+
+################################## CLASSIC TEMPLATE ##################################
 def generate_classic_template(buffer, invoice_data: InvoiceData, logo_path=None, signature_path=None):
     """Generate PDF invoice with classic template (original design)"""
     
@@ -119,9 +135,9 @@ def get_pdf_safe_currency_symbol(currency_symbol):
     symbol_map = {
         # Basic symbols that work reliably in ReportLab
         '$': '$',      # USD, CAD, AUD, etc.
-        '£': 'GBP',    # British Pound - use text for better compatibility
-        '¥': 'JPY',    # Japanese Yen/Chinese Yuan - use text
-        '€': 'EUR',    # Euro symbol - use text for better compatibility
+        '£': '£',      # British Pound - keep symbol
+        '¥': '¥',      # Japanese Yen/Chinese Yuan - keep symbol
+        '€': '€',      # Euro symbol - keep symbol
         
         # Unicode symbols with PDF-safe fallbacks
         '₦': 'NGN',    # Naira symbol - use text fallback for PDF compatibility
@@ -136,6 +152,9 @@ def get_pdf_safe_currency_symbol(currency_symbol):
     
     return symbol_map.get(currency_symbol, currency_symbol)
 
+
+
+#################################### PDF GENERATION FUNCTION ##################################
 def generate_invoice_pdf(buffer, invoice_data: InvoiceData):
     """Generate PDF invoice with Unicode support"""
     
@@ -271,11 +290,12 @@ def generate_invoice_pdf(buffer, invoice_data: InvoiceData):
     
     story.append(Paragraph(client_info, client_style))
     
-    # Items table with serial numbers
-    items_data = [["S/N", "Description", "Quantity", "Unit Price", "Total"]]
-    
-    # Get PDF-safe currency symbol
     currency_symbol = get_pdf_safe_currency_symbol(invoice_data.currency_symbol)
+    # Items table with serial numbers
+    items_data = [["S/N", "Description", "Quantity", f'Unit Price ({currency_symbol})', f'Total ({currency_symbol})']]
+
+    # Get PDF-safe currency symbol
+    # currency_symbol = get_pdf_safe_currency_symbol(invoice_data.currency_symbol)
     print(f"Original currency symbol: {invoice_data.currency_symbol}, PDF-safe: {currency_symbol}")
     
     for index, item in enumerate(invoice_data.items, start=1):
@@ -286,8 +306,8 @@ def generate_invoice_pdf(buffer, invoice_data: InvoiceData):
             str(index),  # Serial number
             item.description,
             quantity_str,
-            f"{currency_symbol} {format_number(item.unit_price)}",
-            f"{currency_symbol} {format_number(item_total)}"
+            format_number(item.unit_price),
+            format_number(item_total)
         ])
     
     # Add subtotal and calculations (with extra empty column for S/N)
@@ -306,7 +326,7 @@ def generate_invoice_pdf(buffer, invoice_data: InvoiceData):
         # Header row with professional blue
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#34495e')),  # Dark blue-gray
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 12),
         ('TOPPADDING', (0, 0), (-1, 0), 15),
@@ -317,7 +337,7 @@ def generate_invoice_pdf(buffer, invoice_data: InvoiceData):
         ('FONTSIZE', (0, 1), (-1, -1), 10),
         ('ALIGN', (0, 1), (0, -1), 'CENTER'),  # Serial number center-aligned
         ('ALIGN', (1, 1), (1, -1), 'LEFT'),    # Description left-aligned
-        ('ALIGN', (2, 1), (-1, -1), 'RIGHT'),  # Quantity, prices right-aligned
+        ('ALIGN', (2, 1), (-1, -1), 'LEFT'),  # Quantity, prices left-aligned
         ('TOPPADDING', (0, 1), (-1, -1), 8),
         ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
         
@@ -403,6 +423,8 @@ def generate_invoice_pdf(buffer, invoice_data: InvoiceData):
     doc.build(story)
 
 
+
+############################## MINIMAL TEMPLATE ##################################
 def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None, signature_path=None):
     """Minimal template with lots of white space and clean typography"""
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=1*inch, bottomMargin=1*inch, 
@@ -533,7 +555,7 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
     
     # Items - very clean table with serial numbers
     if invoice_data.items:
-        items_data = [['S/N', 'Description', 'Quantity', 'Rate', 'Amount']]
+        items_data = [['S/N', 'Description', 'Qty', 'Rate', 'Amount']]
         
         # Get PDF-safe currency symbol
         currency_symbol = get_pdf_safe_currency_symbol(invoice_data.currency_symbol)
@@ -561,7 +583,7 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
             # Data rows - minimal styling
             ('FONTNAME', (0,1), (-1,-1), 'Helvetica'),
             ('FONTSIZE', (0,1), (-1,-1), 10),
-            ('ALIGN', (0,1), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,1), (-1,-1), 'LEFT'),
             ('ALIGN', (1,1), (1,-1), 'LEFT'),
             # Very minimal borders
             ('LINEBELOW', (0,-1), (-1,-1), 0.5, colors.lightgrey),
@@ -637,7 +659,7 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
             try:
                 # Create signature line with image positioned on it
                 sig_line_table = Table([
-                    ["_" * 12, Image(signature_path, width=70, height=25), "_" * 12]
+                    ["_" * 8, Image(signature_path, width=40, height=25), "_" * 8]
                 ], colWidths=[0.8*inch, 1.0*inch, 0.8*inch])
                 
                 sig_line_table.setStyle(TableStyle([
@@ -658,7 +680,7 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
                     textColor=text_color,
                     alignment=1  # Center align
                 )
-                sig_elements.append(Paragraph("_" * 30, line_style))
+                sig_elements.append(Paragraph("_" * 20, line_style))
         else:
             # Just a signature line if no image
             line_style = ParagraphStyle(
@@ -668,7 +690,7 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
                 textColor=text_color,
                 alignment=1  # Center align
             )
-            sig_elements.append(Paragraph("_" * 30, line_style))
+            sig_elements.append(Paragraph("_" * 20, line_style))
         
         # Name - centered
         if invoice_data.signature.user_name:
@@ -706,6 +728,10 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
     doc.build(story)
     return buffer
 
+
+
+
+################################ CORPORATE TEMPLATE ##################################
 def generate_corporate_template(buffer, invoice_data: InvoiceData, logo_path=None, signature_path=None):
     """Corporate template with formal business styling"""
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=0.75*inch, bottomMargin=0.75*inch, 
@@ -932,7 +958,7 @@ def generate_corporate_template(buffer, invoice_data: InvoiceData, logo_path=Non
     
     # Total
     formatted_total = format_number(invoice_data.total)
-    totals_data.append([' ',' TOTAL AMOUNT DUE:', f"{invoice_data.currency_symbol} {formatted_total}"])
+    totals_data.append(['', 'AMOUNT DUE:', f"{invoice_data.currency_symbol} {formatted_total}"])
     
     totals_table = Table(totals_data, colWidths=[2.5*inch, 1.8*inch, 2.2*inch])
     
@@ -1070,6 +1096,12 @@ def generate_corporate_template(buffer, invoice_data: InvoiceData, logo_path=Non
     doc.build(story)
     return buffer
 
+
+
+
+
+
+################################ ELEGANT TEMPLATE ##################################
 def generate_elegant_template(buffer, invoice_data: InvoiceData, logo_path=None, signature_path=None):
     """Elegant template with refined typography and sophisticated design"""
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=0.8*inch, bottomMargin=0.8*inch, 
@@ -1371,48 +1403,33 @@ def generate_elegant_template(buffer, invoice_data: InvoiceData, logo_path=None,
             ('BOTTOMPADDING', (0,0), (0,0), 2),
         ]))
         story.append(comments_table)
+        story.append(Spacer(1, 10))
     
     # Elegant signature section
-    if (invoice_data.signature and 
-        (invoice_data.signature.user_name or signature_path)):
+    if invoice_data.signature and invoice_data.signature.user_name:
         story.append(Spacer(1, 2))
         
-        # Compact signature presentation with signature on line
+        # Signature presentation with image above fixed line
         sig_elements = []
         
-        # Create signature line with embedded signature
+        # Add signature image if available, otherwise add blank space
         if signature_path and os.path.exists(signature_path):
             try:
-                # Reduced signature size to fit on line
                 sig_img = Image(signature_path, width=80, height=30)
-                # Create signature line with image on top
                 sig_elements.append([sig_img])
-                sig_elements.append([Paragraph('_' * 35, ParagraphStyle(
-                    'ElegantSigLine',
-                    parent=styles['Normal'],
-                    fontSize=12,
-                    textColor=elegant_gold,
-                    alignment=1,
-                    spaceBefore=-1  # Move line closer to signature
-                ))])
             except:
-                # Fallback to signature line only
-                sig_elements.append([Paragraph('_' * 40, ParagraphStyle(
-                    'ElegantSigLine',
-                    parent=styles['Normal'],
-                    fontSize=12,
-                    textColor=elegant_gold,
-                    alignment=1
-                ))])
+                sig_elements.append([Spacer(1, 5)])
         else:
-            # Just signature line if no image
-            sig_elements.append([Paragraph('_' * 40, ParagraphStyle(
-                'ElegantSigLine',
-                parent=styles['Normal'],
-                fontSize=12,
-                textColor=elegant_gold,
-                alignment=1
-            ))])
+            sig_elements.append([Spacer(1, 30)])
+        
+        # Fixed signature line
+        sig_elements.append([Paragraph('_' * 30, ParagraphStyle(
+            'ElegantSigLine',
+            parent=styles['Normal'],
+            fontSize=12,
+            textColor=elegant_gold,
+            alignment=1
+        ))])
         
         if invoice_data.signature.user_name:
             sig_name_style = ParagraphStyle(
@@ -1438,28 +1455,26 @@ def generate_elegant_template(buffer, invoice_data: InvoiceData, logo_path=None,
             )
             sig_elements.append([Paragraph(invoice_data.signature.position, sig_pos_style)])
             
-            sig_table = Table(sig_elements, colWidths=[3*inch])
-            sig_table.setStyle(TableStyle([
-                ('FONTSIZE', (0,0), (0,0), 12),
-                ('TEXTCOLOR', (0,0), (0,0), elegant_gold),
-                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-                ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                ('TOPPADDING', (0,1), (-1,-1), 5),
-                ('BOTTOMPADDING', (0,0), (-1,-1), 5),
-            ]))
-            
-            # Center the signature table
-            sig_wrapper = Table([[sig_table]], colWidths=[6*inch])
-            sig_wrapper.setStyle(TableStyle([
-                ('ALIGN', (0,0), (0,0), 'CENTER'),
-            ]))
-            story.append(sig_wrapper)
+        sig_table = Table(sig_elements, colWidths=[3*inch])
+        sig_table.setStyle(TableStyle([
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+            ('TOPPADDING', (0,0), (-1,-1), 5),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+        ]))
+        
+        # Center the signature table
+        sig_wrapper = Table([[sig_table]], colWidths=[6*inch])
+        sig_wrapper.setStyle(TableStyle([
+            ('ALIGN', (0,0), (0,0), 'CENTER'),
+        ]))
+        story.append(sig_wrapper)
     
     doc.build(story)
     return buffer
 
 
-# Template Functions
+############################# Modern Template ###############################
 def generate_modern_template(buffer, invoice_data: InvoiceData, logo_path=None, signature_path=None):
     """Modern template with clean lines and accent colors"""
     doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=0.5*inch, bottomMargin=0.5*inch, 
@@ -1646,7 +1661,7 @@ def generate_modern_template(buffer, invoice_data: InvoiceData, logo_path=None, 
             # Data rows
             ('FONTNAME', (0,1), (-1,-1), 'Helvetica'),
             ('FONTSIZE', (0,1), (-1,-1), 10),
-            ('ALIGN', (0,1), (-1,-1), 'CENTER'),
+            ('ALIGN', (0,1), (-1,-1), 'LEFT'),
             ('ALIGN', (1,1), (1,-1), 'LEFT'),
             # Alternating backgrounds
             ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, light_bg]),

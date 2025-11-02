@@ -48,6 +48,7 @@ print(f"Static directory: {STATIC_DIR}")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 app.mount("/css", StaticFiles(directory=os.path.join(FRONTEND_DIR, "css")), name="css")
 app.mount("/js", StaticFiles(directory=os.path.join(FRONTEND_DIR, "js")), name="js")
+app.mount("/assets", StaticFiles(directory=os.path.join(FRONTEND_DIR, "assets")), name="assets")
 app.mount("/frontend", StaticFiles(directory=FRONTEND_DIR), name="frontend")
 
 
@@ -59,10 +60,22 @@ app.include_router(pdf_router)
 # API Routes
 @app.get("/")
 async def root():
-    """Serve the frontend index.html"""
-    index_path = os.path.join(FRONTEND_DIR, "index.html")
-    print(f"📄 Serving index.html from: {index_path}")
-    return FileResponse(index_path)
+    """Serve the landing page"""
+    landing_path = os.path.join(FRONTEND_DIR, "landing.html")
+    print(f"📄 Serving landing.html from: {landing_path}")
+    return FileResponse(landing_path)
+
+@app.get("/invoice")
+async def invoice_page():
+    """Serve the invoice generation page"""
+    invoice_path = os.path.join(FRONTEND_DIR, "invoice.html")
+    return FileResponse(invoice_path)
+
+@app.get("/receipt")
+async def receipt_page():
+    """Serve the receipt generation page"""
+    receipt_path = os.path.join(FRONTEND_DIR, "receipt.html")
+    return FileResponse(receipt_path)
 
 
 

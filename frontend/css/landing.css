@@ -1,0 +1,253 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+}
+
+.hero-section {
+    text-align: center;
+    padding: 60px 0;
+    color: white;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-section p {
+    font-size: 1.3rem;
+    opacity: 0.9;
+}
+
+.ad-banner {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.ad-placeholder {
+    background: #f5f5f5;
+    border: 2px dashed #ccc;
+    padding: 20px;
+    color: #666;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+.ad-placeholder.vertical {
+    writing-mode: vertical-lr;
+    height: 400px;
+    width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.options-section {
+    margin: 50px 0;
+}
+
+.option-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.option-card {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.option-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.card-icon {
+    font-size: 4rem;
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.option-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.option-card p {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.card-features {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.card-features span {
+    color: #28a745;
+    font-size: 0.9rem;
+}
+
+.card-features i {
+    margin-right: 8px;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.affiliate-section {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    margin: 50px 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.affiliate-section h3 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.affiliate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.affiliate-card {
+    text-align: center;
+    padding: 25px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.affiliate-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.affiliate-card i {
+    font-size: 2.5rem;
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.affiliate-card h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.affiliate-card p {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.affiliate-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.affiliate-link:hover {
+    color: #764ba2;
+}
+
+.side-ad {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+}
+
+.left-ad {
+    left: 20px;
+}
+
+.right-ad {
+    right: 20px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .option-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .option-card {
+        padding: 30px 20px;
+    }
+    
+    .affiliate-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .side-ad {
+        display: none;
+    }
+}

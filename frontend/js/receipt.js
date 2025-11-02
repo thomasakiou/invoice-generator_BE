@@ -1,4 +1,4 @@
-class InvoiceGenerator {
+class ReceiptGenerator {
     constructor() {
         this.items = [];
         this.logoFile = null;
@@ -7,15 +7,16 @@ class InvoiceGenerator {
         this.currencySymbols = {
             'USD': '$', 'EUR': '€', 'GBP': '£', 'JPY': '¥', 'CAD': '$',
             'AUD': '$', 'CHF': '₣', 'CNY': '¥', 'INR': '₹', 'KRW': '₩',
-            'NGN': 'NGN', 'ZAR': 'ZAR', 'BRL': 'BRL', 'MXN': 'MXN', 'SGD': 'SGD',
-            'HKD': 'HKD', 'SEK': 'SEK', 'NOK': 'NOK', 'DKK': 'DKK', 'RUB': 'RUB'
+            'NGN': '₦', 'ZAR': 'R', 'BRL': 'R$', 'MXN': '$', 'SGD': '$',
+            'HKD': '$', 'SEK': 'kr', 'NOK': 'kr', 'DKK': 'kr', 'RUB': '₽'
         };
+        window.receiptGenerator = this;
         this.init();
     }
 
     init() {
-        this.generateInvoiceNumber();
-        this.setDefaultDates();
+        this.generateReceiptNumber();
+        this.setDefaultDate();
         this.addInitialItem();
         this.setupEventListeners();
         this.calculateTotals();
@@ -45,11 +46,11 @@ class InvoiceGenerator {
 
         // Generate and preview buttons
         document.getElementById('generateBtn').addEventListener('click', () => {
-            this.generateInvoice();
+            this.generateReceipt();
         });
 
         document.getElementById('previewBtn').addEventListener('click', () => {
-            this.previewInvoice();
+            this.previewReceipt();
         });
 
         // File uploads
@@ -59,78 +60,70 @@ class InvoiceGenerator {
     setupFileUploads() {
         // Logo upload
         const logoUpload = document.getElementById('logoUpload');
-        const logoArea = logoUpload?.parentElement;
+        const logoArea = logoUpload.parentElement;
         
-        if (logoUpload && logoArea) {
-            logoArea.addEventListener('click', () => logoUpload.click());
-            logoArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                logoArea.style.borderColor = '#4a90e2';
-            });
-            logoArea.addEventListener('dragleave', () => {
-                logoArea.style.borderColor = '#ddd';
-            });
-            logoArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                logoArea.style.borderColor = '#ddd';
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    this.handleLogoUpload(files[0]);
-                }
-            });
-            
-            logoUpload.addEventListener('change', (e) => {
-                console.log('Logo file input changed', e.target.files);
-                if (e.target.files && e.target.files.length > 0) {
-                    console.log('Calling handleLogoUpload');
-                    this.handleLogoUpload(e.target.files[0]);
-                }
-            });
-        }
+        logoArea.addEventListener('click', () => logoUpload.click());
+        logoArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            logoArea.style.borderColor = '#4a90e2';
+        });
+        logoArea.addEventListener('dragleave', () => {
+            logoArea.style.borderColor = '#ddd';
+        });
+        logoArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            logoArea.style.borderColor = '#ddd';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                this.handleLogoUpload(files[0]);
+            }
+        });
+        
+        logoUpload.addEventListener('change', (e) => {
+            console.log('Receipt logo file input changed', e.target.files);
+            if (e.target.files && e.target.files.length > 0) {
+                console.log('Calling receipt handleLogoUpload');
+                this.handleLogoUpload(e.target.files[0]);
+            }
+        });
 
         // Signature upload
         const signatureUpload = document.getElementById('signatureUpload');
-        const signatureArea = signatureUpload?.parentElement;
+        const signatureArea = signatureUpload.parentElement;
         
-        if (signatureUpload && signatureArea) {
-            signatureArea.addEventListener('click', () => signatureUpload.click());
-            signatureArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                signatureArea.style.borderColor = '#4a90e2';
-            });
-            signatureArea.addEventListener('dragleave', () => {
-                signatureArea.style.borderColor = '#ddd';
-            });
-            signatureArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                signatureArea.style.borderColor = '#ddd';
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    this.handleSignatureUpload(files[0]);
-                }
-            });
-            
-            signatureUpload.addEventListener('change', (e) => {
-                if (e.target.files && e.target.files.length > 0) {
-                    this.handleSignatureUpload(e.target.files[0]);
-                }
-            });
-        }
+        signatureArea.addEventListener('click', () => signatureUpload.click());
+        signatureArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            signatureArea.style.borderColor = '#4a90e2';
+        });
+        signatureArea.addEventListener('dragleave', () => {
+            signatureArea.style.borderColor = '#ddd';
+        });
+        signatureArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            signatureArea.style.borderColor = '#ddd';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                this.handleSignatureUpload(files[0]);
+            }
+        });
+        
+        signatureUpload.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                this.handleSignatureUpload(e.target.files[0]);
+            }
+        });
     }
 
-    generateInvoiceNumber() {
+    generateReceiptNumber() {
         const now = new Date();
-        const invoiceNumber = `INV-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
-        document.getElementById('invoiceNumber').value = invoiceNumber;
+        const receiptNumber = `REC-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+        document.getElementById('receiptNumber').value = receiptNumber;
     }
 
-    setDefaultDates() {
+    setDefaultDate() {
         const today = new Date().toISOString().split('T')[0];
-        document.getElementById('purchaseDate').value = today;
-        
-        const dueDate = new Date();
-        dueDate.setDate(dueDate.getDate() + 30);
-        document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+        document.getElementById('paymentDate').value = today;
     }
 
     addInitialItem() {
@@ -235,6 +228,7 @@ class InvoiceGenerator {
         document.getElementById('taxAmount').textContent = `${symbol} ${this.formatNumber(taxAmount)}`;
         document.getElementById('totalAmount').textContent = `${symbol} ${this.formatNumber(total)}`;
         
+        // Show/hide discount and tax rows
         document.getElementById('discountRow').style.display = discountRate > 0 ? 'flex' : 'none';
         document.getElementById('taxRow').style.display = taxRate > 0 ? 'flex' : 'none';
     }
@@ -250,19 +244,32 @@ class InvoiceGenerator {
     }
 
     handleLogoUpload(file) {
+        console.log('Receipt logo upload started', file);
         this.logoFile = file;
         const preview = document.getElementById('logoPreview');
+        console.log('Receipt preview element found:', preview);
+        
+        if (!file || !preview) {
+            console.error('Missing file or preview element');
+            return;
+        }
+        
         const reader = new FileReader();
         reader.onload = (e) => {
+            console.log('Receipt file read complete');
             preview.innerHTML = `
                 <div style="position: relative; display: inline-block;">
                     <img src="${e.target.result}" alt="Logo Preview" style="max-width: 200px; max-height: 100px; display: block;">
-                    <button type="button" onclick="window.invoiceGenerator.removeLogo()" 
+                    <button type="button" onclick="window.receiptGenerator.removeLogo()" 
                             style="position: absolute; bottom: 5px; right: 5px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
             `;
+            console.log('Receipt preview HTML set');
+        };
+        reader.onerror = (e) => {
+            console.error('Receipt FileReader error:', e);
         };
         reader.readAsDataURL(file);
     }
@@ -275,7 +282,7 @@ class InvoiceGenerator {
             preview.innerHTML = `
                 <div style="position: relative; display: inline-block;">
                     <img src="${e.target.result}" alt="Signature Preview" style="max-width: 200px; max-height: 100px; display: block;">
-                    <button type="button" onclick="window.invoiceGenerator.removeSignature()" 
+                    <button type="button" onclick="window.receiptGenerator.removeSignature()" 
                             style="position: absolute; bottom: 5px; right: 5px; background: #dc3545; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -285,38 +292,14 @@ class InvoiceGenerator {
         reader.readAsDataURL(file);
     }
 
-    removeLogo() {
-        this.logoFile = null;
-        const preview = document.getElementById('logoPreview');
-        if (preview) {
-            preview.innerHTML = '';
-        }
-        const upload = document.getElementById('logoUpload');
-        if (upload) {
-            upload.value = '';
-        }
-    }
-
-    removeSignature() {
-        this.signatureFile = null;
-        const preview = document.getElementById('signaturePreview');
-        if (preview) {
-            preview.innerHTML = '';
-        }
-        const upload = document.getElementById('signatureUpload');
-        if (upload) {
-            upload.value = '';
-        }
-    }
-
-    async generateInvoice() {
+    async generateReceipt() {
         if (!this.validateForm()) return;
         
         this.showLoading();
         
         try {
             const formData = this.collectFormData();
-            const response = await fetch('/api/invoices/generate-pdf', {
+            const response = await fetch('/api/receipts/generate-pdf', {
                 method: 'POST',
                 body: formData
             });
@@ -326,32 +309,32 @@ class InvoiceGenerator {
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `invoice-${document.getElementById('invoiceNumber').value}.pdf`;
+                a.download = `receipt-${document.getElementById('receiptNumber').value}.pdf`;
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
                 
-                this.showMessage('Invoice generated successfully!', 'success');
+                this.showMessage('Receipt generated successfully!', 'success');
             } else {
-                throw new Error('Failed to generate invoice');
+                throw new Error('Failed to generate receipt');
             }
         } catch (error) {
-            console.error('Error generating invoice:', error);
-            this.showMessage('Error generating invoice. Please try again.', 'error');
+            console.error('Error generating receipt:', error);
+            this.showMessage('Error generating receipt. Please try again.', 'error');
         } finally {
             this.hideLoading();
         }
     }
 
-    async previewInvoice() {
+    async previewReceipt() {
         if (!this.validateForm()) return;
         
         this.showLoading();
         
         try {
             const formData = this.collectFormData();
-            const response = await fetch('/api/invoices/generate-pdf', {
+            const response = await fetch('/api/receipts/generate-pdf', {
                 method: 'POST',
                 body: formData
             });
@@ -362,18 +345,18 @@ class InvoiceGenerator {
                 window.open(url, '_blank');
                 window.URL.revokeObjectURL(url);
             } else {
-                throw new Error('Failed to preview invoice');
+                throw new Error('Failed to preview receipt');
             }
         } catch (error) {
-            console.error('Error previewing invoice:', error);
-            this.showMessage('Error previewing invoice. Please try again.', 'error');
+            console.error('Error previewing receipt:', error);
+            this.showMessage('Error previewing receipt. Please try again.', 'error');
         } finally {
             this.hideLoading();
         }
     }
 
     validateForm() {
-        const requiredFields = ['companyName', 'invoiceNumber', 'clientName'];
+        const requiredFields = ['companyName', 'receiptNumber', 'customerName', 'paymentDate', 'paymentMethod'];
         
         for (const fieldId of requiredFields) {
             const field = document.getElementById(fieldId);
@@ -384,17 +367,13 @@ class InvoiceGenerator {
             }
         }
         
-        if (this.items.length === 0 || !this.items.some(item => item.description && item.quantity > 0)) {
-            this.showMessage('Please add at least one item with description and quantity', 'error');
-            return false;
-        }
-        
         return true;
     }
 
     collectFormData() {
         const formData = new FormData();
         
+        // Calculate totals
         const subtotal = this.items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
         const discountRate = parseFloat(document.getElementById('discountRate').value) || 0;
         const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
@@ -403,38 +382,39 @@ class InvoiceGenerator {
         const taxAmount = afterDiscount * (taxRate / 100);
         const total = afterDiscount + taxAmount;
         
-        const invoiceData = {
-            invoice_number: document.getElementById('invoiceNumber').value,
+        // Basic receipt data
+        const receiptData = {
+            receipt_number: document.getElementById('receiptNumber').value,
             currency: document.getElementById('currency').value,
-            currency_symbol: this.currencySymbols[this.currentCurrency],
-            template: document.getElementById('template').value,
+            currency_symbol: this.currencySymbols[document.getElementById('currency').value],
             company: {
                 name: document.getElementById('companyName').value,
                 services: document.getElementById('companyServices').value || null,
-                address: document.getElementById('companyAddress').value || null,
-                email: document.getElementById('companyEmail').value || null,
-                phone: document.getElementById('companyPhone').value || null
+                address: document.getElementById('companyAddress').value,
+                email: document.getElementById('companyEmail').value,
+                phone: document.getElementById('companyPhone').value
             },
-            client_name: document.getElementById('clientName').value,
-            client_address: document.getElementById('clientAddress').value || null,
+            customer_name: document.getElementById('customerName').value,
+            customer_address: document.getElementById('customerAddress').value,
+            payment_date: document.getElementById('paymentDate').value || null,
+            payment_method: document.getElementById('paymentMethod').value,
             items: this.items.filter(item => item.description && item.quantity > 0),
             subtotal: subtotal,
-            tax_rate: taxRate > 0 ? taxRate : null,
-            tax_amount: taxRate > 0 ? taxAmount : null,
-            discount_rate: discountRate > 0 ? discountRate : null,
-            discount_amount: discountRate > 0 ? discountAmount : null,
+            tax_rate: taxRate,
+            tax_amount: taxAmount,
+            discount_rate: discountRate,
+            discount_amount: discountAmount,
             total: total,
-            purchase_date: document.getElementById('purchaseDate').value || null,
-            due_date: document.getElementById('dueDate').value || null,
-            comments: document.getElementById('comments').value || null,
+            comments: document.getElementById('comments').value,
+            template: document.getElementById('template').value,
             signature: {
-                user_name: document.getElementById('userName').value || null,
-                position: document.getElementById('userPosition').value || null,
-                signature_filename: null
+                user_name: document.getElementById('userName').value,
+                position: document.getElementById('userPosition').value
             }
         };
         
-        formData.append('invoice_data', JSON.stringify(invoiceData));
+        console.log('Receipt data being sent:', receiptData);
+        formData.append('receipt_data', JSON.stringify(receiptData));
         
         if (this.logoFile) {
             formData.append('logo', this.logoFile);
@@ -472,6 +452,30 @@ class InvoiceGenerator {
             }
         }, 5000);
     }
+
+    removeLogo() {
+        this.logoFile = null;
+        const preview = document.getElementById('logoPreview');
+        if (preview) {
+            preview.innerHTML = '';
+        }
+        const upload = document.getElementById('logoUpload');
+        if (upload) {
+            upload.value = '';
+        }
+    }
+
+    removeSignature() {
+        this.signatureFile = null;
+        const preview = document.getElementById('signaturePreview');
+        if (preview) {
+            preview.innerHTML = '';
+        }
+        const upload = document.getElementById('signatureUpload');
+        if (upload) {
+            upload.value = '';
+        }
+    }
 }
 
 // Theme toggle functionality
@@ -498,8 +502,8 @@ function initThemeToggle() {
     });
 }
 
-// Initialize the invoice generator when the page loads
+// Initialize the receipt generator when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    window.invoiceGenerator = new InvoiceGenerator();
+    window.receiptGenerator = new ReceiptGenerator();
     initThemeToggle();
 });

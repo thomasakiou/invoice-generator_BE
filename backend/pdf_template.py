@@ -1,9 +1,6 @@
 import os
-# import uuid
 from datetime import datetime, date
-# import aiofiles
 from models import *
-from main import *
 
 # Import ReportLab for PDF generation
 from reportlab.lib.pagesizes import A4
@@ -122,9 +119,9 @@ def get_pdf_safe_currency_symbol(currency_symbol):
     symbol_map = {
         # Basic symbols that work reliably in ReportLab
         '$': '$',      # USD, CAD, AUD, etc.
-        '£': '£',      # British Pound  
-        '¥': '¥',      # Japanese Yen/Chinese Yuan
-        '€': '€',      # Euro symbol
+        '£': 'GBP',    # British Pound - use text for better compatibility
+        '¥': 'JPY',    # Japanese Yen/Chinese Yuan - use text
+        '€': 'EUR',    # Euro symbol - use text for better compatibility
         
         # Unicode symbols with PDF-safe fallbacks
         '₦': 'NGN',    # Naira symbol - use text fallback for PDF compatibility
@@ -133,8 +130,8 @@ def get_pdf_safe_currency_symbol(currency_symbol):
         '₽': 'RUB',    # Russian Ruble - use text fallback
         '₣': 'CHF',    # Swiss Franc - use text fallback
         'kr': 'kr',    # Scandinavian currencies
-        'R$': 'R$',    # Brazilian Real
-        'R': 'R',      # South African Rand
+        'R$': 'BRL',   # Brazilian Real - use text
+        'R': 'ZAR',    # South African Rand - use text
     }
     
     return symbol_map.get(currency_symbol, currency_symbol)
@@ -162,15 +159,15 @@ def generate_invoice_pdf(buffer, invoice_data: InvoiceData):
     if logo_path and os.path.exists(logo_path):
         try:
             logo_img = Image(logo_path)
-            logo_img.drawHeight = 0.7*inch  # Smaller logo
-            logo_img.drawWidth = 0.7*inch   # Smaller logo
+            logo_img.drawHeight = 0.9*inch  # Smaller logo
+            logo_img.drawWidth = 0.9*inch   # Smaller logo
             header_row.append(logo_img)
         except Exception as e:
             print(f"Error loading logo: {e}")
-            placeholder = create_placeholder_box(0.7*inch, 0.7*inch)
+            placeholder = create_placeholder_box(0.9*inch, 0.9*inch)
             header_row.append(placeholder)
     else:
-        placeholder = create_placeholder_box(0.7*inch, 0.7*inch)
+        placeholder = create_placeholder_box(0.9*inch, 0.9*inch)
         header_row.append(placeholder)
     
     # Right column: Company information
@@ -184,6 +181,8 @@ def generate_invoice_pdf(buffer, invoice_data: InvoiceData):
     )
     
     company_info = f'<font name="Helvetica-Bold" size="16">{invoice_data.company.name}</font><br/>'
+    if invoice_data.company.services:
+        company_info += f'<font name="Helvetica" size="10" color="gray">{invoice_data.company.services}</font><br/><br/>'
     if invoice_data.company.address:
         company_info += f'<font name="Helvetica" size="9" color="gray">{invoice_data.company.address}</font><br/>'
     if invoice_data.company.email:
@@ -226,7 +225,7 @@ def generate_invoice_pdf(buffer, invoice_data: InvoiceData):
     
     # Invoice details section - restructured for left-aligned dates
     details_data = [
-        [f"Invoice #: {invoice_data.invoice_number}", f"Date: {invoice_data.purchase_date or date.today()}"],
+        [f"Invoice #: {invoice_data.invoice_number}", f"Issue Date: {invoice_data.purchase_date or date.today()}"],
         ["", f"Due Date: {invoice_data.due_date or 'Not specified'}"]
     ]
 
@@ -277,6 +276,7 @@ def generate_invoice_pdf(buffer, invoice_data: InvoiceData):
     
     # Get PDF-safe currency symbol
     currency_symbol = get_pdf_safe_currency_symbol(invoice_data.currency_symbol)
+    print(f"Original currency symbol: {invoice_data.currency_symbol}, PDF-safe: {currency_symbol}")
     
     for index, item in enumerate(invoice_data.items, start=1):
         item_total = item.quantity * item.unit_price
@@ -462,6 +462,16 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
     company_info = []
     if invoice_data.company.name:
         company_info.append(Paragraph(invoice_data.company.name, company_name_style))
+    if invoice_data.company.services:
+        services_style = ParagraphStyle(
+            'MinimalCompanyServices',
+            parent=styles['Normal'],
+            fontSize=10,
+            textColor=text_color,
+            spaceAfter=8,
+            leftIndent=0
+        )
+        company_info.append(Paragraph(invoice_data.company.services, services_style))
     if invoice_data.company.address:
         company_info.append(Paragraph(invoice_data.company.address, company_details_style))
     if invoice_data.company.email:
@@ -474,7 +484,7 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
     invoice_details.append(Paragraph(f"<b>Invoice Number:</b> {invoice_data.invoice_number}", details_style))
     
     current_date = datetime.now().strftime("%B %d, %Y")
-    invoice_details.append(Paragraph(f"<b>Date:</b> {current_date}", details_style))
+    invoice_details.append(Paragraph(f"<b>Issue Date:</b> {current_date}", details_style))
     
     if invoice_data.due_date:
         # Handle both string and date object types
@@ -525,6 +535,9 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
     if invoice_data.items:
         items_data = [['S/N', 'Description', 'Quantity', 'Rate', 'Amount']]
         
+        # Get PDF-safe currency symbol
+        currency_symbol = get_pdf_safe_currency_symbol(invoice_data.currency_symbol)
+        
         for index, item in enumerate(invoice_data.items, 1):
             formatted_rate = format_number(item.unit_price)
             formatted_amount = format_number(item.quantity * item.unit_price)
@@ -534,8 +547,8 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
                 str(index),
                 item.description,
                 qty_display,
-                f"{invoice_data.currency_symbol} {formatted_rate}",
-                f"{invoice_data.currency_symbol} {formatted_amount}"
+                f"{currency_symbol} {formatted_rate}",
+                f"{currency_symbol} {formatted_amount}"
             ])
         
         items_table = Table(items_data, colWidths=[0.4*inch, 2.8*inch, 0.7*inch, 1.25*inch, 1.35*inch])
@@ -735,11 +748,25 @@ def generate_corporate_template(buffer, invoice_data: InvoiceData, logo_path=Non
             fontSize=24,
             textColor=corporate_blue,
             fontName='Helvetica-Bold',
-            spaceAfter=12,
+            spaceAfter=4 if invoice_data.company.services else 12,
             spaceBefore=8,
             alignment=1  # Center align
         )
         story.append(Paragraph(invoice_data.company.name, prominent_company_style))
+    
+    # Add company services right after company name
+    if invoice_data.company.services:
+        services_style = ParagraphStyle(
+            'ProminentServices',
+            parent=styles['Normal'],
+            fontSize=10,
+            textColor=corporate_gray,
+            fontName='Helvetica',
+            spaceAfter=12,
+            spaceBefore=2,
+            alignment=1  # Center align
+        )
+        story.append(Paragraph(invoice_data.company.services, services_style))
     
     # Add company address immediately after company name with minimal spacing
     if invoice_data.company.address:
@@ -866,13 +893,13 @@ def generate_corporate_template(buffer, invoice_data: InvoiceData, logo_path=Non
             ('TEXTCOLOR', (0,0), (-1,0), colors.white),
             ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
             ('FONTSIZE', (0,0), (-1,0), 10),
-            ('ALIGN', (0,0), (-1,0), 'CENTER'),  # Center all headers
+            ('ALIGN', (0,0), (-1,0), 'LEFT'),    # Left align all headers
             # Data rows
             ('FONTNAME', (0,1), (-1,-1), 'Helvetica'),
             ('FONTSIZE', (0,1), (-1,-1), 10),
             ('ALIGN', (0,1), (0,-1), 'CENTER'),  # Serial number center
             ('ALIGN', (1,1), (1,-1), 'LEFT'),    # Description left
-            ('ALIGN', (2,1), (-1,-1), 'CENTER'), # QTY, Price, Total center
+            ('ALIGN', (2,1), (-1,-1), 'LEFT'),   # QTY, Price, Total left
             # Professional borders
             ('GRID', (0,0), (-1,-1), 1, corporate_blue),
             ('LINEWIDTH', (0,0), (-1,-1), 1),
@@ -1130,6 +1157,18 @@ def generate_elegant_template(buffer, invoice_data: InvoiceData, logo_path=None,
     
     if invoice_data.company.name:
         company_section.append([Paragraph(invoice_data.company.name, company_style)])
+    if invoice_data.company.services:
+        services_style = ParagraphStyle(
+            'ElegantServices',
+            parent=styles['Normal'],
+            fontSize=10,
+            textColor=elegant_gray,
+            fontName='Helvetica-Oblique',
+            spaceBefore=2,
+            spaceAfter=8,
+            alignment=1  # Center
+        )
+        company_section.append([Paragraph(invoice_data.company.services, services_style)])
     if invoice_data.company.address:
         company_section.append([Paragraph(invoice_data.company.address, company_address_style)])
     if invoice_data.company.email:
@@ -1243,13 +1282,13 @@ def generate_elegant_template(buffer, invoice_data: InvoiceData, logo_path=None,
             ('TEXTCOLOR', (0,0), (-1,0), colors.white),
             ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
             ('FONTSIZE', (0,0), (-1,0), 11),
-            ('ALIGN', (0,0), (-1,0), 'CENTER'),  # Center all headers
+            ('ALIGN', (0,0), (-1,0), 'LEFT'),    # Left align all headers
             # Data rows with alternating elegant colors
             ('FONTNAME', (0,1), (-1,-1), 'Helvetica'),
             ('FONTSIZE', (0,1), (-1,-1), 10),
             ('ALIGN', (0,1), (0,-1), 'CENTER'),  # Serial number center
             ('ALIGN', (1,1), (1,-1), 'LEFT'),    # Description left
-            ('ALIGN', (2,1), (-1,-1), 'CENTER'), # QTY, Price, Amount center
+            ('ALIGN', (2,1), (-1,-1), 'LEFT'),   # QTY, Price, Amount left
             ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, elegant_light]),
             # Sophisticated borders
             ('LINEWIDTH', (0,0), (-1,-1), 1),
@@ -1467,6 +1506,15 @@ def generate_modern_template(buffer, invoice_data: InvoiceData, logo_path=None, 
     
     if invoice_data.company.name:
         left_content.append(Paragraph(invoice_data.company.name, company_name_style))
+    if invoice_data.company.services:
+        services_style = ParagraphStyle(
+            'ModernCompanyServices',
+            parent=styles['Normal'],
+            fontSize=10,
+            textColor=accent_color,
+            spaceAfter=6
+        )
+        left_content.append(Paragraph(invoice_data.company.services, services_style))
     if invoice_data.company.address:
         left_content.append(Paragraph(invoice_data.company.address, company_details_style))
     if invoice_data.company.email:
@@ -1545,7 +1593,7 @@ def generate_modern_template(buffer, invoice_data: InvoiceData, logo_path=None, 
     
     details = [Paragraph("INVOICE DETAILS", ParagraphStyle('ModernLabelRight', parent=label_style, alignment=2))]
     current_date = datetime.now().strftime("%B %d, %Y")
-    details.append(Paragraph(f"<b>Date:</b> {current_date}", details_style))
+    details.append(Paragraph(f"<b>Issue Date:</b> {current_date}", details_style))
     
     if invoice_data.due_date:
         # Handle both string and date object types
@@ -1594,7 +1642,7 @@ def generate_modern_template(buffer, invoice_data: InvoiceData, logo_path=None, 
             ('TEXTCOLOR', (0,0), (-1,0), colors.white),
             ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
             ('FONTSIZE', (0,0), (-1,0), 11),
-            ('ALIGN', (0,0), (-1,0), 'CENTER'),
+            ('ALIGN', (0,0), (-1,0), 'LEFT'),
             # Data rows
             ('FONTNAME', (0,1), (-1,-1), 'Helvetica'),
             ('FONTSIZE', (0,1), (-1,-1), 10),

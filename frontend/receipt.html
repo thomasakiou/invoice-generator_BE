@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt Generator</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="assets/img/invoice3.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+            <h1><i class="fas fa-receipt"></i> Receipt Generator</h1>
+            <p>Create professional payment receipts quickly and easily</p>
+            <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle dark/light mode">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <div class="adsense-container">
+            <div class="ad-placeholder">Advertisement Banner - 728x90</div>
+        </div>
+
+        <main class="invoice-form">
+            <div id="receiptForm">
+                <!-- Company Information Section -->
+                <section class="form-section">
+                    <h2><i class="fas fa-building"></i> Company Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="companyName">Company Name *</label>
+                            <input type="text" id="companyName" name="companyName" required placeholder="Enter your company name">
+                        </div>
+                        <div class="form-group">
+                            <label for="companyServices">What We Do</label>
+                            <input type="text" id="companyServices" name="companyServices" placeholder="e.g., General contractors, We deal on tiles and plumbing items">
+                        </div>
+                        <div class="form-group">
+                            <label for="companyAddress">Company Address</label>
+                            <textarea id="companyAddress" name="companyAddress" rows="3" placeholder="123 Business Street&#10;Suite 100&#10;City, State 12345"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="companyEmail">Company Email</label>
+                            <input type="email" id="companyEmail" name="companyEmail" placeholder="company@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="companyPhone">Company Phone</label>
+                            <input type="tel" id="companyPhone" name="companyPhone" placeholder="+1 (555) 123-4567">
+                        </div>
+                    </div>
+                    
+                    <!-- Logo Upload -->
+                    <div class="form-group">
+                        <label for="logoUpload">Company Logo</label>
+                        <div class="file-upload-area">
+                            <input type="file" id="logoUpload" accept="image/*">
+                            <div class="upload-text">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Click to upload logo or drag & drop</span>
+                            </div>
+                        </div>
+                        <div id="logoPreview" class="image-preview"></div>
+                    </div>
+                </section>
+
+                <!-- Receipt Details Section -->
+                <section class="form-section">
+                    <h2><i class="fas fa-receipt"></i> Receipt Details</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="receiptNumber">Receipt Number *</label>
+                            <input type="text" id="receiptNumber" name="receiptNumber" required placeholder="Will be auto-generated">
+                        </div>
+                        <div class="form-group">
+                            <label for="currency">Currency *</label>
+                            <select id="currency" name="currency" required>
+                                <option value="USD">USD ($) - US Dollar</option>
+                                <option value="EUR">EUR (€) - Euro</option>
+                                <option value="GBP">GBP (£) - British Pound</option>
+                                <option value="JPY">JPY (¥) - Japanese Yen</option>
+                                <option value="CAD">CAD ($) - Canadian Dollar</option>
+                                <option value="AUD">AUD ($) - Australian Dollar</option>
+                                <option value="CHF">CHF (₣) - Swiss Franc</option>
+                                <option value="CNY">CNY (¥) - Chinese Yuan</option>
+                                <option value="INR">INR (₹) - Indian Rupee</option>
+                                <option value="KRW">KRW (₩) - Korean Won</option>
+                                <option value="NGN">NGN (₦) - Nigerian Naira</option>
+                                <option value="ZAR">ZAR (R) - South African Rand</option>
+                                <option value="BRL">BRL (R$) - Brazilian Real</option>
+                                <option value="MXN">MXN ($) - Mexican Peso</option>
+                                <option value="SGD">SGD ($) - Singapore Dollar</option>
+                                <option value="HKD">HKD ($) - Hong Kong Dollar</option>
+                                <option value="SEK">SEK (kr) - Swedish Krona</option>
+                                <option value="NOK">NOK (kr) - Norwegian Krone</option>
+                                <option value="DKK">DKK (kr) - Danish Krone</option>
+                                <option value="RUB">RUB (₽) - Russian Ruble</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentDate">Payment Date *</label>
+                            <input type="date" id="paymentDate" name="paymentDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="template">Receipt Template *</label>
+                            <select id="template" name="template" required>
+                                <option value="classic">Classic - Traditional Receipt Style</option>
+                                <option value="modern">Modern - Clean Contemporary Design</option>
+                                <option value="minimal">Minimal - Simple and Clean</option>
+                                <option value="thermal">Thermal - POS Receipt Style</option>
+
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentMethod">Payment Method *</label>
+                            <select id="paymentMethod" name="paymentMethod" required>
+                                <option value="cash">Cash</option>
+                                <option value="credit_card">Credit Card</option>
+                                <option value="debit_card">Debit Card</option>
+                                <option value="bank_transfer">Bank Transfer</option>
+                                <option value="check">Check</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Customer Information Section -->
+                <section class="form-section">
+                    <h2><i class="fas fa-user"></i> Customer Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="customerName">Customer Name *</label>
+                            <input type="text" id="customerName" name="customerName" required placeholder="Enter customer name">
+                        </div>
+                        <div class="form-group">
+                            <label for="customerAddress">Customer Address</label>
+                            <textarea id="customerAddress" name="customerAddress" rows="3" placeholder="456 Customer Avenue&#10;Apartment 200&#10;Customer City, State 67890"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Items Section -->
+                <section class="form-section">
+                    <h2><i class="fas fa-list"></i> Receipt Items</h2>
+                    <div class="items-container">
+                        <div class="items-header">
+                            <span>Description</span>
+                            <span>Quantity</span>
+                            <span>Unit Price</span>
+                            <span>Total</span>
+                            <span>Actions</span>
+                        </div>
+                        <div id="itemsList">
+                            <!-- Items will be added dynamically -->
+                        </div>
+                        <button type="button" id="addItemBtn" class="btn-primary">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+
+                    <!-- Totals Section -->
+                    <div class="totals-section">
+                        <div class="totals-grid">
+                            <div class="form-group">
+                                <label for="discountRate">Discount (%)</label>
+                                <input type="number" id="discountRate" name="discountRate" min="0" max="100" step="0.01" placeholder="e.g., 10 for 10%">
+                            </div>
+                            <div class="form-group">
+                                <label for="taxRate">Tax (%)</label>
+                                <input type="number" id="taxRate" name="taxRate" min="0" max="100" step="0.01" placeholder="e.g., 8.25 for 8.25%">
+                            </div>
+                        </div>
+                        
+                        <div class="totals-display">
+                            <div class="total-row">
+                                <span>Subtotal:</span>
+                                <span id="subtotalAmount">$0.00</span>
+                            </div>
+                            <div class="total-row" id="discountRow" style="display: none;">
+                                <span>Discount:</span>
+                                <span id="discountAmount">$0.00</span>
+                            </div>
+                            <div class="total-row" id="taxRow" style="display: none;">
+                                <span>Tax:</span>
+                                <span id="taxAmount">$0.00</span>
+                            </div>
+                            <div class="total-row total-final">
+                                <span>Total Paid:</span>
+                                <span id="totalAmount">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Additional Information Section -->
+                <section class="form-section">
+                    <h2><i class="fas fa-comment"></i> Additional Information</h2>
+                    <div class="form-group">
+                        <label for="comments">Comments / Notes</label>
+                        <textarea id="comments" name="comments" rows="4" placeholder="Enter additional comments or notes...">Thank you for your payment</textarea>
+                    </div>
+                </section>
+
+                <!-- Signature Section -->
+                <section class="form-section">
+                    <h2><i class="fas fa-signature"></i> Signature</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="userName">Your Name</label>
+                            <input type="text" id="userName" name="userName" placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="userPosition">Your Position</label>
+                            <input type="text" id="userPosition" name="userPosition" placeholder="e.g., Cashier, Manager, Sales Representative">
+                        </div>
+                    </div>
+                    
+                    <!-- Signature Upload -->
+                    <div class="form-group">
+                        <label for="signatureUpload">Signature Image</label>
+                        <div class="file-upload-area">
+                            <input type="file" id="signatureUpload" accept="image/*">
+                            <div class="upload-text">
+                                <i class="fas fa-pen-nib"></i>
+                                <span>Click to upload signature or drag & drop</span>
+                            </div>
+                        </div>
+                        <div id="signaturePreview" class="image-preview"></div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <button type="button" id="previewBtn" class="btn-secondary">
+                    <i class="fas fa-eye"></i> Preview
+                </button>
+                <button type="button" id="generateBtn" class="btn-primary">
+                    <i class="fas fa-file-pdf"></i> Generate PDF
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Generating receipt...</p>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="message-container"></div>
+
+    <script src="js/receipt.js"></script>
+</body>
+</html>

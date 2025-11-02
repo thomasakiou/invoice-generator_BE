@@ -294,14 +294,14 @@ def generate_invoice_pdf(buffer, invoice_data: InvoiceData):
     items_data.append(["", "", "", "Subtotal:", f"{currency_symbol} {format_number(invoice_data.subtotal)}"])
     
     if invoice_data.discount_amount and invoice_data.discount_amount > 0:
-        items_data.append(["", "", "", f"Discount ({invoice_data.discount_rate}%):", f"-{currency_symbol} {format_number(invoice_data.discount_amount)}"])
+        items_data.append(["", "", "", f"Discount ({invoice_data.discount_rate}%):", f"- {currency_symbol} {format_number(invoice_data.discount_amount)}"])
     
     if invoice_data.tax_amount and invoice_data.tax_amount > 0:
         items_data.append(["", "", "", f"Tax ({invoice_data.tax_rate}%):", f"{currency_symbol} {format_number(invoice_data.tax_amount)}"])
     
     items_data.append(["", "", "", "TOTAL:", f"{currency_symbol} {format_number(invoice_data.total)}"])
     
-    items_table = Table(items_data, colWidths=[0.5*inch, 2.5*inch, 1*inch, 1.5*inch, 1.5*inch])
+    items_table = Table(items_data, colWidths=[0.5*inch, 2.2*inch, 0.8*inch, 1.7*inch, 1.8*inch])
     items_table.setStyle(TableStyle([
         # Header row with professional blue
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#34495e')),  # Dark blue-gray
@@ -551,7 +551,7 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
                 f"{currency_symbol} {formatted_amount}"
             ])
         
-        items_table = Table(items_data, colWidths=[0.4*inch, 2.8*inch, 0.7*inch, 1.25*inch, 1.35*inch])
+        items_table = Table(items_data, colWidths=[0.4*inch, 2.4*inch, 0.6*inch, 1.4*inch, 1.7*inch])
         
         items_table.setStyle(TableStyle([
             # Header - simple line
@@ -596,7 +596,7 @@ def generate_minimal_template(buffer, invoice_data: InvoiceData, logo_path=None,
     formatted_total = format_number(invoice_data.total)
     totals_data.append(['Total', f"{invoice_data.currency_symbol} {formatted_total}"])
     
-    totals_table = Table(totals_data, colWidths=[5*inch, 2*inch])
+    totals_table = Table(totals_data, colWidths=[4.5*inch, 2.5*inch])
     
     totals_table.setStyle(TableStyle([
         # Simple styling
@@ -885,7 +885,7 @@ def generate_corporate_template(buffer, invoice_data: InvoiceData, logo_path=Non
                 f"{invoice_data.currency_symbol} {formatted_amount}"
             ])
         
-        items_table = Table(items_data, colWidths=[0.5*inch, 2.3*inch, 0.8*inch, 1.2*inch, 1.2*inch])
+        items_table = Table(items_data, colWidths=[0.4*inch, 2.0*inch, 0.7*inch, 1.4*inch, 1.5*inch])
         
         items_table.setStyle(TableStyle([
             # Header styling - formal and professional
@@ -934,7 +934,7 @@ def generate_corporate_template(buffer, invoice_data: InvoiceData, logo_path=Non
     formatted_total = format_number(invoice_data.total)
     totals_data.append([' ',' TOTAL AMOUNT DUE:', f"{invoice_data.currency_symbol} {formatted_total}"])
     
-    totals_table = Table(totals_data, colWidths=[3*inch, 2*inch, 1.5*inch])
+    totals_table = Table(totals_data, colWidths=[2.5*inch, 1.8*inch, 2.2*inch])
     
     totals_table.setStyle(TableStyle([
         # Regular rows
@@ -1274,7 +1274,7 @@ def generate_elegant_template(buffer, invoice_data: InvoiceData, logo_path=None,
                 f"{invoice_data.currency_symbol} {formatted_amount}"
             ])
         
-        items_table = Table(items_data, colWidths=[0.5*inch, 2.3*inch, 0.8*inch, 1.2*inch, 1.2*inch])
+        items_table = Table(items_data, colWidths=[0.4*inch, 2.0*inch, 0.7*inch, 1.4*inch, 1.5*inch])
         
         items_table.setStyle(TableStyle([
             # Elegant header with gradient-like effect
@@ -1325,7 +1325,7 @@ def generate_elegant_template(buffer, invoice_data: InvoiceData, logo_path=None,
     formatted_total = format_number(invoice_data.total)
     totals_data.append(['', 'TOTAL:', f"{invoice_data.currency_symbol} {formatted_total}"])
     
-    totals_table = Table(totals_data, colWidths=[3*inch, 1.5*inch, 1.5*inch])
+    totals_table = Table(totals_data, colWidths=[2.5*inch, 1.8*inch, 2.2*inch])
     
     totals_table.setStyle(TableStyle([
         # Regular rows
@@ -1634,7 +1634,7 @@ def generate_modern_template(buffer, invoice_data: InvoiceData, logo_path=None, 
                 f"{invoice_data.currency_symbol} {formatted_total}"
             ])
         
-        items_table = Table(items_data, colWidths=[0.5*inch, 2.5*inch, 0.7*inch, 1.15*inch, 1.15*inch])
+        items_table = Table(items_data, colWidths=[0.4*inch, 2.2*inch, 0.6*inch, 1.3*inch, 1.5*inch])
         
         items_table.setStyle(TableStyle([
             # Header styling
@@ -1683,7 +1683,7 @@ def generate_modern_template(buffer, invoice_data: InvoiceData, logo_path=None, 
     formatted_total = format_number(invoice_data.total)
     totals_data.append(['', '', 'TOTAL:', f"{invoice_data.currency_symbol} {formatted_total}"])
     
-    totals_table = Table(totals_data, colWidths=[2*inch, 1.5*inch, 1.25*inch, 1.75*inch])
+    totals_table = Table(totals_data, colWidths=[1.8*inch, 1.2*inch, 1.3*inch, 2.2*inch])
     
     totals_table.setStyle(TableStyle([
         # Regular rows

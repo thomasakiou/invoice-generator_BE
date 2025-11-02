@@ -316,7 +316,7 @@ class InvoiceGenerator {
         
         try {
             const formData = this.collectFormData();
-            const response = await fetch('/api/invoices/generate-pdf', {
+            const response = await fetch('./api/invoices/generate-pdf', {
                 method: 'POST',
                 body: formData
             });
@@ -351,7 +351,7 @@ class InvoiceGenerator {
         
         try {
             const formData = this.collectFormData();
-            const response = await fetch('/api/invoices/generate-pdf', {
+            const response = await fetch('./api/invoices/generate-pdf', {
                 method: 'POST',
                 body: formData
             });

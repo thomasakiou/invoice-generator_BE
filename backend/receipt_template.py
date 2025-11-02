@@ -125,15 +125,15 @@ def generate_classic_receipt(buffer, receipt_data, logo_path=None, signature_pat
                 str(i),
                 item.description,
                 qty_display,
-                f"{currency_symbol}{format_number(item.unit_price)}",
-                f"{currency_symbol}{format_number(item.quantity * item.unit_price)}"
+                f"{currency_symbol} {format_number(item.unit_price)}",
+                f"{currency_symbol} {format_number(item.quantity * item.unit_price)}"
             ])
     else:
         # No items - fill with 10 empty rows
         for i in range(10):
             items_data.append(['', '', '', '', ''])
     
-    items_table = Table(items_data, colWidths=[0.4*inch, 2.8*inch, 0.7*inch, 1.3*inch, 1.3*inch])
+    items_table = Table(items_data, colWidths=[0.4*inch, 2.4*inch, 0.6*inch, 1.5*inch, 1.6*inch])
     items_table.setStyle(TableStyle([
         # Header
         ('BACKGROUND', (0,0), (-1,0), header_blue),
@@ -177,7 +177,7 @@ def generate_classic_receipt(buffer, receipt_data, logo_path=None, signature_pat
         
         totals_data.append(['TOTAL:', f"{currency_symbol}{format_number(receipt_data.total)}"])
         
-        totals_table = Table(totals_data, colWidths=[5.5*inch, 1.5*inch])
+        totals_table = Table(totals_data, colWidths=[4.8*inch, 2.2*inch])
         totals_table.setStyle(TableStyle([
             ('FONTNAME', (0,0), (-1,-2), 'Helvetica'),
             ('FONTSIZE', (0,0), (-1,-2), 10),
@@ -197,7 +197,7 @@ def generate_classic_receipt(buffer, receipt_data, logo_path=None, signature_pat
         story.append(Spacer(1, 25))
     else:
         # Empty totals section
-        empty_totals = Table([['TOTAL:', '']], colWidths=[5.5*inch, 1.5*inch])
+        empty_totals = Table([['TOTAL:', '']], colWidths=[4.8*inch, 2.2*inch])
         empty_totals.setStyle(TableStyle([
             ('FONTNAME', (0,0), (-1,-1), 'Helvetica-Bold'),
             ('FONTSIZE', (0,0), (-1,-1), 12),
@@ -351,7 +351,7 @@ def generate_modern_receipt(buffer, receipt_data, logo_path=None, signature_path
         for i in range(5):
             items_data.append(['', '', '', '', ''])
     
-    items_table = Table(items_data, colWidths=[0.4*inch, 2.8*inch, 0.7*inch, 1.3*inch, 1.3*inch])
+    items_table = Table(items_data, colWidths=[0.4*inch, 2.4*inch, 0.6*inch, 1.5*inch, 1.6*inch])
     items_table.setStyle(TableStyle([
         # Header
         ('BACKGROUND', (0,0), (-1,0), dark_gray),
@@ -396,7 +396,7 @@ def generate_modern_receipt(buffer, receipt_data, logo_path=None, signature_path
         
         totals_data.append(['TOTAL:', f"{currency_symbol}{format_number(receipt_data.total)}"])
         
-        totals_table = Table(totals_data, colWidths=[5.5*inch, 1.5*inch])
+        totals_table = Table(totals_data, colWidths=[4.8*inch, 2.2*inch])
         totals_table.setStyle(TableStyle([
             ('FONTNAME', (0,0), (-1,-2), 'Helvetica'),
             ('FONTSIZE', (0,0), (-1,-2), 11),
@@ -412,7 +412,7 @@ def generate_modern_receipt(buffer, receipt_data, logo_path=None, signature_path
         story.append(totals_table)
     else:
         # Empty total
-        empty_total = Table([['TOTAL:', '']], colWidths=[5.5*inch, 1.5*inch])
+        empty_total = Table([['TOTAL:', '']], colWidths=[4.8*inch, 2.2*inch])
         empty_total.setStyle(TableStyle([
             ('FONTNAME', (0,0), (-1,-1), 'Helvetica-Bold'),
             ('FONTSIZE', (0,0), (-1,-1), 14),
@@ -567,7 +567,7 @@ def generate_minimal_receipt(buffer, receipt_data, logo_path=None, signature_pat
         for i in range(3):
             items_data.append(['', '', '', '', ''])
     
-    items_table = Table(items_data, colWidths=[0.4*inch, 2.6*inch, 0.8*inch, 1.2*inch, 1.5*inch])
+    items_table = Table(items_data, colWidths=[0.4*inch, 2.2*inch, 0.7*inch, 1.4*inch, 1.8*inch])
     items_table.setStyle(TableStyle([
         # Header
         ('BACKGROUND', (0,0), (-1,0), light_gray),

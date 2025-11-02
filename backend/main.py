@@ -11,8 +11,8 @@ from routes import pdf_router
 from reportlab.lib.pagesizes import A4
 
 
-# Initialize FastAPI app
-app = FastAPI(title="Invoice Generator API", version="1.0.0")
+# Initialize FastAPI app with root_path for nginx proxy
+app = FastAPI(title="Invoice Generator API", version="1.0.0", root_path="/document-generator")
 
 
 # Add request logging middleware
@@ -93,21 +93,9 @@ async def test_endpoint():
 
 if __name__ == "__main__":
     import uvicorn
-    print("Starting Invoice Generator Server...")
+    print("Starting Invoice Generator Server for nginx proxy...")
     print("Server will be available at:")
-    print("   - http://localhost:8000")  
-    print("   - http://127.0.0.1:8000")
-    print("")
-    print("If external browsers don't work, try:")
-    print("   1. Disable Windows Firewall temporarily")
-    print("   2. Use 127.0.0.1:8000 instead of localhost:8000")
-    print("   3. Run as Administrator")
-    print("")
+    print("   - https://vmi2848672.contaboserver.net/document-generator/")
+    print("   - Local: http://127.0.0.1:8001")
     
-    # Try localhost first for better compatibility
-    try:
-        uvicorn.run(app, host="127.0.0.1", port=8000, access_log=True)
-    except Exception as e:
-        print(f"❌ Failed to start on 127.0.0.1: {e}")
-        print("🔄 Trying 0.0.0.0...")
-        uvicorn.run(app, host="0.0.0.0", port=8000, access_log=True)
+    uvicorn.run(app, host="127.0.0.1", port=8001, access_log=True)

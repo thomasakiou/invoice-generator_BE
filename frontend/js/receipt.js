@@ -299,7 +299,7 @@ class ReceiptGenerator {
         
         try {
             const formData = this.collectFormData();
-            const response = await fetch('/api/receipts/generate-pdf', {
+            const response = await fetch('./api/receipts/generate-pdf', {
                 method: 'POST',
                 body: formData
             });
@@ -334,7 +334,7 @@ class ReceiptGenerator {
         
         try {
             const formData = this.collectFormData();
-            const response = await fetch('/api/receipts/generate-pdf', {
+            const response = await fetch('./api/receipts/generate-pdf', {
                 method: 'POST',
                 body: formData
             });
